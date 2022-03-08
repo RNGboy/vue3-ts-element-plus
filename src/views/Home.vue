@@ -1,7 +1,15 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
-    <el-button type="primary">Primary</el-button>
+    <el-button
+      type="primary"
+      @click="
+        {
+          ;() => console.log(4444)
+        }
+      "
+      >Primary</el-button
+    >
     <el-button type="success">Success</el-button>
   </div>
 </template>
