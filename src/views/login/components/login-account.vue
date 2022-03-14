@@ -20,21 +20,31 @@ import { defineComponent, reactive, ref } from 'vue'
 import { accountRules } from '../config/config'
 // 使用ElForm类型,再做一次导入
 import { ElForm } from 'element-plus'
+
+import localCache from '@/utils/cache'
 export default defineComponent({
   setup() {
     const account = reactive({
-      name: '',
-      password: ''
+      name: localCache.getCache('name') ?? '',
+      password: localCache.getCache('password') ?? ''
     })
 
     const formRef = ref<InstanceType<typeof ElForm>>()
 
-    const loginAction = () => {
+    const loginAction = (isKeepPassword: boolean) => {
       console.log('正在登录...')
       // valid是布尔类型,验证成功返回true,错误返回false
       formRef.value?.validate((valid) => {
         if (valid) {
-          console.log('执行真正的登陆逻辑')
+          // 判断是否记住密码
+          if (isKeepPassword) {
+            // 添加本地缓存
+            localCache.setCache('name', account.name)
+            localCache.setCache('password', account.password)
+          } else {
+            localCache.deleteCache('name')
+            localCache.deleteCache('password')
+          }
         }
       })
     }

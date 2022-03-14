@@ -51,7 +51,7 @@ export default defineComponent({
 
     const handleLogin = () => {
       console.log('立即登陆', accountRef.value)
-      accountRef.value?.loginAction()
+      accountRef.value?.loginAction(isKeepPassword.value)
     }
     return {
       isKeepPassword,
