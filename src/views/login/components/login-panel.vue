@@ -1,8 +1,8 @@
 <template>
   <div class="login-panel">
     <h1 class="title">后台管理系统</h1>
-    <el-tabs type="border-card" stretch>
-      <el-tab-pane>
+    <el-tabs type="border-card" stretch v-model="currentTab">
+      <el-tab-pane name="account">
         <template #label>
           <span class="custom-tabs-label">
             <el-icon><avatar /></el-icon>
@@ -11,14 +11,14 @@
         </template>
         <login-account ref="accountRef" />
       </el-tab-pane>
-      <el-tab-pane>
+      <el-tab-pane name="phone">
         <template #label>
           <span class="custom-tabs-label">
             <el-icon><phone-filled /></el-icon>
             <span>手机登陆</span>
           </span>
         </template>
-        <login-phone />
+        <login-phone ref="phoneRef" />
       </el-tab-pane>
     </el-tabs>
     <div class="account-control">
@@ -45,18 +45,29 @@ export default defineComponent({
     LoginPhone
   },
   setup() {
+    // 定义属性
     const isKeepPassword = ref(true)
     // 这里通过typeof去获取一个组件的类型,用对象真正的实例的类型
     const accountRef = ref<InstanceType<typeof LoginAccount>>()
+    const phoneRef = ref<InstanceType<typeof LoginPhone>>()
+    const currentTab = ref<string>('account')
 
+    // 定义方法
     const handleLogin = () => {
-      console.log('立即登陆', accountRef.value)
-      accountRef.value?.loginAction(isKeepPassword.value)
+      if (currentTab.value === 'account') {
+        accountRef.value?.loginAction(isKeepPassword.value)
+      } else {
+        // 手机登陆
+        console.log('调用LoginPhone的loginAction方法')
+      }
+      console.log(currentTab)
     }
     return {
       isKeepPassword,
-      handleLogin,
-      accountRef
+      currentTab,
+      accountRef,
+      phoneRef,
+      handleLogin
     }
   }
 })

@@ -28,11 +28,11 @@ createApp(App).use(ElementPlus).use(store).use(router).mount('#app')
 //   }
 // })
 
-interface DataType {
-  data: any
-  returnCode: string
-  success: boolean
-}
+// interface DataType {
+//   data: any
+//   returnCode: string
+//   success: boolean
+// }
 
 // hyRequest
 //   .request<DataType>({
@@ -43,10 +43,10 @@ interface DataType {
 //     console.log(res.data)
 //   })
 
-hyRequest
-  .get<DataType>({
-    url: '/home/multidata'
-  })
-  .then((res) => {
-    console.log(res)
-  })
+// hyRequest
+//   .get<DataType>({
+//     url: '/home/multidata'
+//   })
+//   .then((res) => {
+//     console.log(res)
+//   })

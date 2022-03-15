@@ -30,7 +30,7 @@ class HYRequest {
     // 添加全局拦截器(所有实例)
     this.instance.interceptors.request.use(
       (config) => {
-        console.log('全局拦截器:请求成功拦截')
+        // console.log('全局拦截器:请求成功拦截')
         if (this.showLoading) {
           this.loading = ElLoading.service({
             lock: true,
@@ -41,23 +41,23 @@ class HYRequest {
         return config
       },
       (err) => {
-        console.log('全局拦截器:请求失败拦截')
+        // console.log('全局拦截器:请求失败拦截')
         return err
       }
     )
     this.instance.interceptors.response.use(
       (res) => {
-        console.log('全局拦截器:响应成功拦截')
+        // console.log('全局拦截器:响应成功拦截')
         this.loading?.close()
         const data = res.data
         if (data.returnCode === '-1001') {
-          console.log('请求失败-,错误信息')
+          // console.log('请求失败-,错误信息')
         } else {
           return data
         }
       },
       (err) => {
-        console.log('全局拦截器:响应失败拦截')
+        // console.log('全局拦截器:响应失败拦截')
         this.loading?.close()
         return err
       }
