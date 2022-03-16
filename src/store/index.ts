@@ -16,4 +16,9 @@ const store = createStore<IRootState>({
   }
 })
 
+// 刷新初始化时调用该api,防止本地利用缓存登陆但vuex数据缺失
+export const setupStore = () => {
+  store.dispatch('login/loadLocalLogin')
+}
+
 export default store
