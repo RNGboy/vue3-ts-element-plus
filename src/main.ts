@@ -12,8 +12,12 @@ import { setupStore } from '@/store/index'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
-const app = createApp(App).use(ElementPlus).use(store).use(router)
+const app = createApp(App).use(ElementPlus).use(store)
+
+// 此处setupStore和app.use(router)执行顺行替换会出现路由无法匹配到组件,
+// 涉及路由注册函数install和匹配同步执行, 可以查看实战章节八,开局讲述原因
 setupStore()
+app.use(router)
 app.mount('#app')
 
 // hyRequest.request({

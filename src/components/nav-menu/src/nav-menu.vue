@@ -1,11 +1,18 @@
-/* eslint-disable vue/no-unused-components */
 <template>
   <div class="nav-menu">
     <div class="logo">
       <img class="img" src="~@/assets/img/logo.svg" alt="logo" />
-      <span class="title">vue3+ts</span>
+      <span v-if="!collapse" class="title">vue3+ts</span>
     </div>
-    <el-menu class="el-menu-vertical" default-active="2">
+    <el-menu
+      class="el-menu-vertical"
+      mode="vertical"
+      :default-active="defaultValue"
+      background-color="#0c2135"
+      :collapse="collapse"
+      text-color="#b7bdc3"
+      active-text-color="#0a60bd"
+    >
       <template v-for="item in userMenus" :key="item.id">
         <!-- 二级菜单 -->
         <template v-if="item.type === 1">
@@ -20,7 +27,10 @@
             </template>
             <!-- 遍历里面的item -->
             <template v-for="subitem in item.children" :key="subitem.id">
-              <el-menu-item :index="subitem.id + ''">
+              <el-menu-item
+                :index="subitem.id + ''"
+                @click="handleMenuItem(subitem)"
+              >
                 <i v-if="subitem.icon" :class="subitem.icon"></i>
                 <span>{{ subitem.name }}</span>
               </el-menu-item>
@@ -40,8 +50,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, markRaw, ref } from 'vue'
 import { useStore } from '@/store'
+import { useRouter, useRoute } from 'vue-router'
+import { pathMapToMenu } from '@/utils/map-menus'
 
 import {
   Location,
@@ -51,17 +63,44 @@ import {
 } from '@element-plus/icons-vue'
 
 export default defineComponent({
+  props: {
+    collapse: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: { Location, Document, IconMenu, Setting },
   setup() {
+    //store
     const store = useStore()
     const userMenus = computed(() => store.state.login.userMenus)
 
+    //router
+    const router = useRouter()
+    const route = useRoute() //  当前route对象
+    const currentPath = route.path
+
+    //data
+    const menu = pathMapToMenu(userMenus.value, currentPath)
+    const defaultValue = ref(menu.id + '')
+
     const icons = [Location, Document, IconMenu, Setting]
+    icons.map((item) => (item = markRaw(item)))
     userMenus.value.map((item: any, index: number) => {
       item.newIcon = icons[index]
     })
+
+    //event
+    const handleMenuItem = (item: any) => {
+      router.push({
+        path: item.url ?? '/not-found'
+      })
+    }
+
     return {
-      userMenus
+      userMenus,
+      defaultValue,
+      handleMenuItem
     }
   }
 })
