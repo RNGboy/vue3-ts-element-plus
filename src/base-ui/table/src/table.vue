@@ -100,7 +100,8 @@ export default defineComponent({
 .footer {
   margin-top: 15px;
   .el-pagination {
-    text-align: right;
+    // text-align: right;
+    justify-content: flex-end;
   }
 }
 </style>
