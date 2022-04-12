@@ -1,5 +1,8 @@
 <template>
   <div class="hy-form">
+    <div class="header">
+      <slot name="header"></slot>
+    </div>
     <el-form label-width="100px">
       <el-row>
         <template v-for="item in formItem" :key="item.label">
@@ -15,11 +18,15 @@
                 <el-input
                   :placeholder="item.placeholder"
                   :show-password="item.type === 'password'"
+                  v-bind="item.otherOptions"
+                  v-model="formData[`${item.field}`]"
                 />
               </template>
               <template v-else-if="item.type === 'select'">
                 <el-select
                   :placeholder="item.placeholder"
+                  v-bind="item.otherOptions"
+                  v-model="formData[`${item.field}`]"
                   style="width: '100%'"
                 >
                   <el-option
@@ -33,6 +40,7 @@
               <template v-else-if="item.type === 'datepicker'">
                 <el-date-picker
                   v-bind="item.otherOptions"
+                  v-model="formData[`${item.field}`]"
                   style="width: 100%"
                 ></el-date-picker>
               </template>
@@ -41,16 +49,23 @@
         </template>
       </el-row>
     </el-form>
+    <div class="footer">
+      <slot name="footer"></slot>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 // PropType可以传入泛型
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref, watch } from 'vue'
 import { IFormItem } from '../types'
 
 export default defineComponent({
   props: {
+    modelValue: {
+      type: Object,
+      require: true
+    },
     formItem: {
       type: Array as PropType<IFormItem[]>,
       default: () => []
@@ -74,8 +89,17 @@ export default defineComponent({
       })
     }
   },
-  setup() {
-    return {}
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    const formData = ref({ ...props.modelValue })
+    // 监听formdData发生改变后,发送给父组件实现双向绑定
+    watch(formData, (newValue) => emit('update:modelValue', newValue), {
+      deep: true
+    })
+
+    return {
+      formData
+    }
   }
 })
 </script>

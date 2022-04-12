@@ -1,3 +1,4 @@
+import { IBreadcrumb } from '@/base-ui/breadcrumb'
 import { RouteRecordRaw } from 'vue-router'
 
 let firstMenu: any = null
@@ -40,11 +41,29 @@ export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
   return routes
 }
 
-export function pathMapToMenu(userMemus: any[], currentPath: string): any {
+/**
+ *
+ * @param userMemus 菜单信息
+ * @param currentPath 当前路由
+ * @returns breadcrumb 面包屑信息
+ */
+export function pathMapBreadcrumbs(userMemus: any[], currentPath: string) {
+  const breadcrumb: IBreadcrumb[] = []
+  pathMapToMenu(userMemus, currentPath, breadcrumb)
+  return breadcrumb
+}
+
+export function pathMapToMenu(
+  userMemus: any[],
+  currentPath: string,
+  breadcrumb?: IBreadcrumb[]
+): any {
   for (const menu of userMemus) {
     if (menu.type === 1) {
       const findMenu = pathMapToMenu(menu.children ?? [], currentPath)
       if (findMenu) {
+        breadcrumb?.push({ name: menu.name })
+        breadcrumb?.push({ name: findMenu.name })
         return findMenu
       }
     } else if (menu.type === 2 && menu.url === currentPath) {
