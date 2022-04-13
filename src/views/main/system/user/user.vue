@@ -2,14 +2,16 @@
   <div class="user">
     <div class="search">
       <page-search :searchFromConfig="formConfig"></page-search>
-      <page-content :contentTableConfig="contentTableConfig"></page-content>
+      <page-content
+        :contentTableConfig="contentTableConfig"
+        pageName="users"
+      ></page-content>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
-import { useStore } from '@/store'
+import { defineComponent } from 'vue'
 import PageSearch from '@/components/page-search'
 import PageContent from '@/components/page-content'
 

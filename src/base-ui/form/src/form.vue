@@ -57,7 +57,7 @@
 
 <script lang="ts">
 // PropType可以传入泛型
-import { defineComponent, PropType, ref, watch } from 'vue'
+import { defineComponent, PropType, ref, watch, computed } from 'vue'
 import { IFormItem } from '../types'
 
 export default defineComponent({
@@ -91,7 +91,13 @@ export default defineComponent({
   },
   emits: ['update:modelValue'],
   setup(props, { emit }) {
-    const formData = ref({ ...props.modelValue })
+    let formData = ref({ ...props.modelValue })
+    // let val = computed(() => ({ ...props.modelValue }))
+
+    // watch(
+    //   val,
+    //   (newValue) => ((formData.value = ref({ ...newValue })), { deep: true })
+    // )
     // 监听formdData发生改变后,发送给父组件实现双向绑定
     watch(formData, (newValue) => emit('update:modelValue', newValue), {
       deep: true
