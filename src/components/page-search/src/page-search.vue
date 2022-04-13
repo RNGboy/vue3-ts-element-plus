@@ -9,7 +9,9 @@
           <el-button icon="el-icon-refresh" @click="handleReset"
             >重置</el-button
           >
-          <el-button icon="el-icon-serch" type="primary">搜索</el-button>
+          <el-button icon="el-icon-serch" type="primary" @click="handleQuery"
+            >搜索</el-button
+          >
         </div>
       </template>
     </hy-form>
@@ -28,7 +30,8 @@ export default defineComponent({
       require: true
     }
   },
-  setup(props) {
+  emits: ['resetBtnClick', 'queryBtnClick'],
+  setup(props, { emit }) {
     // 双向绑定的属性应该是由配置文件的field决定的
     const formItems = props.searchFromConfig?.formItem ?? []
     const formOriginData: any = {}
@@ -37,14 +40,26 @@ export default defineComponent({
     }
     const formData = ref(formOriginData)
 
-    // 重置搜索
+    // 重置
     const handleReset = () => {
-      formData.value = formOriginData
+      // 重置功能第一种方式
+      // formData.value = formOriginData
+
+      // 重置功能第二种方式
+      for (const key in formOriginData) {
+        formData.value[key] = formOriginData[key]
+      }
+      emit('resetBtnClick')
+    }
+    // 搜索
+    const handleQuery = () => {
+      emit('queryBtnClick', formData.value)
     }
 
     return {
       formData,
-      handleReset
+      handleReset,
+      handleQuery
     }
   }
 })

@@ -31,7 +31,7 @@
                 >
                   <el-option
                     v-for="option in item.options"
-                    :key="option.value"
+                    :key="option.title"
                     :value="option.value"
                     >{{ option.title }}</el-option
                   >
@@ -92,12 +92,13 @@ export default defineComponent({
   emits: ['update:modelValue'],
   setup(props, { emit }) {
     let formData = ref({ ...props.modelValue })
-    // let val = computed(() => ({ ...props.modelValue }))
 
+    // 重置功能第一种方式
     // watch(
-    //   val,
-    //   (newValue) => ((formData.value = ref({ ...newValue })), { deep: true })
+    //   () => props.modelValue,
+    //   (newValue) => ((formData.value = { ...newValue }), { deep: true })
     // )
+
     // 监听formdData发生改变后,发送给父组件实现双向绑定
     watch(formData, (newValue) => emit('update:modelValue', newValue), {
       deep: true
