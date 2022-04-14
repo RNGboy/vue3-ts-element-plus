@@ -39,7 +39,7 @@
         #[item.slotName]="scope"
       >
         <template v-if="item.slotName">
-          <slot :name="item.prop.slotName" :row="scope.row" />
+          <slot :name="item.slotName" :row="scope.row" />
         </template>
       </template>
     </hy-table>
@@ -118,7 +118,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .page-content {
-  padding: 20px;
-  border-top: 20px solid #f5f5f5;
+  padding: 0.2rem;
+  border-top: 0.2rem solid #f5f5f5;
 }
 </style>

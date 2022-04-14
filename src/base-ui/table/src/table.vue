@@ -13,6 +13,7 @@
       border
       style="width: 100%"
       @selection-change="handleSelect"
+      v-bind="childrenProps"
     >
       <el-table-column
         type="selection"
@@ -35,15 +36,13 @@
         </el-table-column>
       </template>
     </el-table>
-    <div class="footer">
+    <div class="footer" v-if="showFooter">
       <slot name="footer">
         <el-pagination
           v-model:currentPage="page.currentPage"
           v-model:page-size="page.pageSize"
           :page-sizes="[10, 20, 30, 40]"
-          :small="small"
-          :disabled="disabled"
-          :background="background"
+          small="small"
           layout="total, sizes, prev, pager, next, jumper"
           :total="listCount"
           @size-change="handleSizeChange"
@@ -77,6 +76,14 @@ export default defineComponent({
     page: {
       type: Object,
       default: () => ({ currentPage: 0, pageSize: 10 })
+    },
+    childrenProps: {
+      type: Object,
+      default: () => ({})
+    },
+    showFooter: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ['selectionChange', 'update:page'],
