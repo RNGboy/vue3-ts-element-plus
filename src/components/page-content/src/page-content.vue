@@ -8,7 +8,13 @@
     >
       <!-- header中的插槽 -->
       <template #headerHandler>
-        <el-button type="primary" size="medium">新建用户</el-button>
+        <el-button
+          type="primary"
+          size="medium"
+          v-if="isCreate"
+          @click="handleNew"
+          >新建用户</el-button
+        >
       </template>
       <!-- 列中的插槽 -->
       <template #status="scope">
@@ -25,10 +31,24 @@
       <template #updateAt="scope">
         <span>{{ $filters.formatTime(scope.row.createAt) }}</span>
       </template>
-      <template #handler>
+      <template #handler="scope">
         <div class="handle-btns">
-          <el-button :icon="Edit" size="small" type="text">编辑</el-button>
-          <el-button :icon="Delete" size="small" type="text">删除</el-button>
+          <el-button
+            v-if="isUpdate"
+            :icon="Edit"
+            size="small"
+            type="text"
+            @click="handleEdit(scope.row)"
+            >编辑</el-button
+          >
+          <el-button
+            v-if="isDelete"
+            :icon="Delete"
+            size="small"
+            type="text"
+            @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
         </div>
       </template>
 
@@ -50,6 +70,7 @@ import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from '@/store'
 import HyTable from '@/base-ui/table'
 import { Delete, Edit } from '@element-plus/icons-vue'
+import { usePermission } from '@/hooks/use-permission'
 
 export default defineComponent({
   components: { HyTable },
@@ -63,12 +84,19 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  emits: ['newBtnClick', 'editBtnClick'],
+  setup(props, { emit }) {
     const store = useStore()
+
+    // 获取操作的权限
+    const isCreate = usePermission(props.pageName, 'create')
+    const isUpdate = usePermission(props.pageName, 'update')
+    const isDelete = usePermission(props.pageName, 'delete')
+    const isQuery = usePermission(props.pageName, 'query')
 
     // 双向绑定pageInfo
     const pageInfo = ref({
-      currentPage: 0,
+      currentPage: 1,
       pageSize: 10
     })
 
@@ -76,6 +104,7 @@ export default defineComponent({
 
     // 发送网络请求
     const getPageData = (queryInfo) => {
+      if (!isQuery) return
       store.dispatch('system/getPageListAction', {
         pageName: props.pageName,
         queryInfo: {
@@ -104,6 +133,22 @@ export default defineComponent({
       return true
     })
 
+    // 删除/编辑/新建操作
+    const handleDelete = (row) => {
+      store.dispatch('system/deletePageDataAction', {
+        pageName: props.pageName,
+        id: row.id
+      })
+    }
+
+    const handleEdit = (row) => {
+      emit('editBtnClick', row)
+    }
+
+    const handleNew = () => {
+      emit('newBtnClick')
+    }
+
     return {
       pageInfo,
       dataList,
@@ -111,7 +156,13 @@ export default defineComponent({
       Delete,
       Edit,
       getPageData,
-      otherPropSlots
+      otherPropSlots,
+      isCreate,
+      isUpdate,
+      isDelete,
+      handleDelete,
+      handleEdit,
+      handleNew
     }
   }
 })
