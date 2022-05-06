@@ -96,7 +96,7 @@ export default defineComponent({
 
     // 双向绑定pageInfo
     const pageInfo = ref({
-      currentPage: 1,
+      currentPage: 0,
       pageSize: 10
     })
 
@@ -108,7 +108,7 @@ export default defineComponent({
       store.dispatch('system/getPageListAction', {
         pageName: props.pageName,
         queryInfo: {
-          offset: pageInfo.value.currentPage * pageInfo.value.pageSize,
+          offset: 0,
           size: pageInfo.value.pageSize,
           ...queryInfo
         }

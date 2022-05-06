@@ -7,7 +7,7 @@
       </span>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item>退出登陆</el-dropdown-item>
+          <el-dropdown-item @click="handleExit">退出登陆</el-dropdown-item>
           <el-dropdown-item>用户信息</el-dropdown-item>
           <el-dropdown-item>系统管理</el-dropdown-item>
         </el-dropdown-menu>
@@ -20,14 +20,24 @@
 import { defineComponent, computed } from 'vue'
 import { Avatar } from '@element-plus/icons-vue'
 import { useStore } from '@/store'
+import { useRouter } from 'vue-router'
+import localCache from '@/utils/cache'
 
 export default defineComponent({
   components: { Avatar },
   setup() {
     const store = useStore()
     const name = computed(() => store.state.login.userInfo.name)
+
+    const router = useRouter()
+    // 退出登陆
+    const handleExit = () => {
+      localCache.deleteCache('token')
+      router.push('/main')
+    }
     return {
-      name
+      name,
+      handleExit
     }
   }
 })
